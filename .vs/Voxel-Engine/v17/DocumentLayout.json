@@ -1,7 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Elias Steininger\\Documents\\Files\\Voxel-Engine\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\Elias Steininger\\Documents\\Files\\GitHub Repositorys\\Voxel-Engine\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7B766920-A4C0-4734-8F21-7BF5D767A605}|Voxel-Engine\\Voxel-Engine.vcxproj|C:\\Users\\Elias Steininger\\Documents\\Files\\GitHub Repositorys\\Voxel-Engine\\Voxel-Engine\\src\\Voxel-Engine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{7B766920-A4C0-4734-8F21-7BF5D767A605}|Voxel-Engine\\Voxel-Engine.vcxproj|solutionrelative:Voxel-Engine\\src\\Voxel-Engine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +14,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Voxel-Engine.cpp",
+              "DocumentMoniker": "C:\\Users\\Elias Steininger\\Documents\\Files\\GitHub Repositorys\\Voxel-Engine\\Voxel-Engine\\src\\Voxel-Engine.cpp",
+              "RelativeDocumentMoniker": "Voxel-Engine\\src\\Voxel-Engine.cpp",
+              "ToolTip": "C:\\Users\\Elias Steininger\\Documents\\Files\\GitHub Repositorys\\Voxel-Engine\\Voxel-Engine\\src\\Voxel-Engine.cpp",
+              "RelativeToolTip": "Voxel-Engine\\src\\Voxel-Engine.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-12-29T18:32:51.969Z",
+              "EditorCaption": ""
             }
           ]
         }
