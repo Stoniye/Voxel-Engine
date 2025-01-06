@@ -1,9 +1,27 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
+
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define GLCall(x) GLClearError();x;ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+static void GLClearError()
+{
+    while (glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall(const char* function, const char* file, int line)
+{
+    while (GLenum error = glGetError()) {
+        std::cout << "[OpenGL Erorr] Error Code: " << error << " | " << function << " | " << file << " | Line " << line << std::endl;
+        return false;
+    }
+    return true;
+}
 
 struct ShaderProgramSource
 {
@@ -23,10 +41,8 @@ static ShaderProgramSource ParseShader(const std::string& filepath)
     std::string line;
     std::stringstream ss[2];
     ShaderType type = ShaderType::NONE;
-    while (getline(stream, line))
-    {
-        if (line.find("#shader") != std::string::npos)
-        {
+    while (getline(stream, line)) {
+        if (line.find("#shader") != std::string::npos) {
             if (line.find("vertex") != std::string::npos)
                 type = ShaderType::VERTEX;
             else if(line.find("fragment") != std::string::npos)
@@ -88,8 +104,7 @@ int main(void)
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Voxel Engine", NULL, NULL);
-    if (!window)
-    {
+    if (!window) {
         glfwTerminate();
         return -1;
     }
