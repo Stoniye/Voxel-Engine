@@ -93,7 +93,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Voxel Engine", NULL, NULL);
+    window = glfwCreateWindow(640, 640, "Voxel Engine", NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
@@ -109,24 +109,52 @@ int main(void)
         std::cout << "GLEW Error" << std::endl;
 
     float positions[] = {
-        -0.5f, -0.5f, // 0
-        0.5f, -0.5f,  // 1
-        0.5f, 0.5f,   // 2
-        -0.5f, 0.5f   // 3
+        // Front face
+        -0.5f, -0.5f,  0.5f, // 0
+         0.5f, -0.5f,  0.5f, // 1
+         0.5f,  0.5f,  0.5f, // 2
+        -0.5f,  0.5f,  0.5f, // 3
+
+        // Back face
+        -0.5f, -0.5f, -0.5f, // 4
+         0.5f, -0.5f, -0.5f, // 5
+         0.5f,  0.5f, -0.5f, // 6
+        -0.5f,  0.5f, -0.5f, // 7
     };
 
     unsigned int indices[] = {
+        // Front face
         0, 1, 2,
-        2, 3, 0
+        2, 3, 0,
+
+        // Back face
+        4, 5, 6,
+        6, 7, 4,
+
+        // Left face
+        4, 0, 3,
+        3, 7, 4,
+
+        // Right face
+        1, 5, 6,
+        6, 2, 1,
+
+        // Top face
+        3, 2, 6,
+        6, 7, 3,
+
+        // Bottom face
+        4, 5, 1,
+        1, 0, 4
     };
 
 
     VertexBuffer vb(positions, sizeof(positions));
     
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 
-    IndexBuffer ib(indices, 6);
+    IndexBuffer ib(indices, 36);
     
     ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
     unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
@@ -135,13 +163,46 @@ int main(void)
     int location = glGetUniformLocation(shader, "u_Color");
     glUniform4f(location, 0.0f, 1.0f, 0.0f, 1.0f);
 
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    const float fov = 30.0f;
+    const float aspectRatio = 640.0f / 640.0f;
+    const float near = 0.1f;
+    const float far = 100.0f;
+
+    // transform 3D coordinates into 2D screen coordinates
+    float projectionMatrix[16] = {
+        1.0f / (aspectRatio * tan(fov / 2.0f)), 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f / tan(fov / 2.0f), 0.0f, 0.0f,
+        0.0f, 0.0f, -(far + near) / (far - near), -1.0f,
+        0.0f, 0.0f, -(2.0f * far * near) / (far - near), 0.0f
+    };
+
+    int projectionLocation = glGetUniformLocation(shader, "u_Projection");
+    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, projectionMatrix);
+
+    float angle = 0.0f;
+
+    while (!glfwWindowShouldClose(window))
+    {   
+        // clear buffers
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        angle += 0.01f;
+
+        // Matrix for position, scale, rotation for the cube
+        float modelMatrix[16] = {
+            cos(angle), 0.0f, sin(angle), 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            -sin(angle), 0.0f, cos(angle), 0.0f,
+            0.0f, 0.0f, -2.0f, 1.0f
+        };
+
+        int modelLocation = glGetUniformLocation(shader, "u_Model");
+        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, modelMatrix);
+
+        // Draw Cube
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
