@@ -84,6 +84,11 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
     return program;
 }
 
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
 int main(void)
 {
     GLFWwindow* window;
@@ -107,6 +112,9 @@ int main(void)
     /* Initialize glew and test for errors */
     if (glewInit() != GLEW_OK)
         std::cout << "GLEW Error" << std::endl;
+
+    // Register keyboard callback
+    glfwSetKeyCallback(window, keyCallback);
 
     float positions[] = {
         // Front face
@@ -182,6 +190,7 @@ int main(void)
     glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, projectionMatrix);
 
     float angle = 0.0f;
+    float position[3] = {0.0f, 0.0f, -2.0f};
 
     while (!glfwWindowShouldClose(window))
     {   
@@ -190,12 +199,31 @@ int main(void)
 
         angle += 0.01f;
 
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+            position[2] += 0.1f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            position[2] -= 0.1f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            position[0] += 0.1f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            position[0] -= 0.1f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            position[1] += 0.1f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+            position[1] -= 0.1f;
+        }
+
         // Matrix for position, scale, rotation for the cube
         float modelMatrix[16] = {
             cos(angle), 0.0f, sin(angle), 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             -sin(angle), 0.0f, cos(angle), 0.0f,
-            0.0f, 0.0f, -2.0f, 1.0f
+            position[0], position[1], position[2], 1.0f
         };
 
         int modelLocation = glGetUniformLocation(shader, "u_Model");
